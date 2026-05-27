@@ -1,0 +1,151 @@
+/* overlay.css - 雀魂AI浮层样式 */
+
+#mahjong-ai-overlay {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 280px;
+  background: rgba(20, 20, 30, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  color: #e8e8e8;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 13px;
+  z-index: 999999;
+  user-select: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.mai-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: rgba(83, 74, 183, 0.7);
+  border-radius: 10px 10px 0 0;
+  cursor: move;
+}
+
+.mai-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+}
+
+.mai-controls {
+  display: flex;
+  gap: 6px;
+}
+
+.mai-btn {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.7);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 0 4px;
+  line-height: 1;
+}
+
+.mai-btn:hover {
+  color: #fff;
+}
+
+.mai-body {
+  padding: 12px;
+}
+
+.mai-body.hidden {
+  display: none;
+}
+
+.mai-status {
+  color: rgba(255,255,255,0.5);
+  font-size: 12px;
+  text-align: center;
+  padding: 8px 0;
+}
+
+.mai-advice.hidden {
+  display: none;
+}
+
+.mai-recommend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.mai-label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.5);
+  min-width: 48px;
+}
+
+.mai-tile {
+  font-size: 16px;
+  font-weight: 500;
+  color: #FAC775;
+  background: rgba(250, 199, 117, 0.15);
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(250, 199, 117, 0.3);
+}
+
+.mai-reason {
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.6;
+  margin-bottom: 10px;
+  padding: 8px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 6px;
+  max-height: 100px;
+  overflow-y: auto;
+}
+
+.mai-hand {
+  margin-bottom: 8px;
+}
+
+.mai-tiles-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-top: 4px;
+}
+
+.mai-tile-item {
+  font-size: 11px;
+  padding: 2px 5px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 3px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* 花色分色 */
+.mai-tile-man { color: #e85555; }      /* 万字 - 红 */
+.mai-tile-pin { color: #55bb55; }      /* 筒子 - 绿 */
+.mai-tile-sou { color: #5599ee; }      /* 索子 - 蓝 */
+.mai-tile-honor { color: #ddaa00; }    /* 字牌 - 金 */
+
+.mai-tile-highlight {
+  background: rgba(226, 75, 74, 0.25) !important;
+  border-color: rgba(226, 75, 74, 0.5) !important;
+  color: #f09595;
+}
+
+.mai-shanten {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.mai-footer {
+  padding: 4px 12px 8px;
+  text-align: right;
+  font-size: 10px;
+  color: rgba(255,255,255,0.25);
+}

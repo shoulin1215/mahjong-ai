@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>雀魂AI助手</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 280px;
+      font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-size: 13px;
+      background: #1a1a2e;
+      color: #e8e8e8;
+    }
+    .header {
+      padding: 14px 16px 10px;
+      background: rgba(83, 74, 183, 0.5);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .header h1 { font-size: 15px; font-weight: 500; color: #fff; }
+    .header p { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 2px; }
+    .section {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .section-title {
+      font-size: 11px; color: rgba(255,255,255,0.4);
+      text-transform: uppercase; letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; }
+    .toggle-label { font-size: 13px; }
+    .toggle {
+      width: 40px; height: 22px; background: rgba(255,255,255,0.15);
+      border-radius: 11px; position: relative; cursor: pointer; transition: background 0.2s;
+    }
+    .toggle.active { background: #534AB7; }
+    .toggle-knob {
+      position: absolute; top: 3px; left: 3px; width: 16px; height: 16px;
+      background: #fff; border-radius: 50%; transition: transform 0.2s;
+    }
+    .toggle.active .toggle-knob { transform: translateX(18px); }
+    .form-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .form-row-stack { margin-bottom: 8px; }
+    .form-label { font-size: 12px; color: rgba(255,255,255,0.6); }
+    .form-hint { font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 2px; }
+    select, input[type="text"], input[type="password"] {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 4px; color: #e8e8e8; font-size: 12px;
+      padding: 5px 8px; outline: none; width: 100%;
+    }
+    select:focus, input:focus { border-color: rgba(83, 74, 183, 0.6); }
+    select { width: auto; min-width: 130px; cursor: pointer; }
+    input::placeholder { color: rgba(255,255,255,0.25); }
+    .custom-fields { display: none; margin-top: 10px; }
+    .custom-fields.show { display: block; }
+    .custom-field { margin-bottom: 8px; }
+    .custom-field label {
+      display: block; font-size: 11px; color: rgba(255,255,255,0.5);
+      margin-bottom: 3px;
+    }
+    .save-btn {
+      width: 100%; padding: 7px 0; margin-top: 6px;
+      background: rgba(83, 74, 183, 0.4);
+      border: 1px solid rgba(83, 74, 183, 0.6);
+      border-radius: 5px; color: #e8e8e8; font-size: 12px;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .save-btn:hover { background: rgba(83, 74, 183, 0.6); }
+    .save-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .preset-tag {
+      display: inline-block; font-size: 10px; padding: 1px 6px;
+      background: rgba(255,255,255,0.08); border-radius: 3px;
+      color: rgba(255,255,255,0.5); cursor: pointer; margin: 3px 3px 0 0;
+      transition: background 0.15s;
+    }
+    .preset-tag:hover { background: rgba(83, 74, 183, 0.3); color: #e8e8e8; }
+    .status-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: #888;
+      display: inline-block; margin-right: 6px;
+    }
+    .status-dot.online { background: #1D9E75; }
+    .status-dot.offline { background: #E24B4A; }
+    .status-text { font-size: 12px; color: rgba(255,255,255,0.5); }
+    .footer {
+      padding: 10px 16px; font-size: 11px;
+      color: rgba(255,255,255,0.25); text-align: center;
+    }
+    .toast {
+      position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%);
+      background: rgba(29,158,117,0.9); color: #fff; padding: 6px 14px;
+      border-radius: 4px; font-size: 12px; opacity: 0;
+      transition: opacity 0.3s; pointer-events: none;
+    }
+    .toast.show { opacity: 1; }
+    .toast.error { background: rgba(226,75,74,0.9); }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>雀魂AI助手</h1>
+    <p>大模型实时出牌建议</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">主开关</div>
+    <div class="toggle-row">
+      <span class="toggle-label">启用AI建议</span>
+      <div class="toggle" id="toggle-main">
+        <div class="toggle-knob"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">服务状态</div>
+    <div style="display:flex;align-items:center;margin-bottom:6px;">
+      <span class="status-dot" id="vision-dot"></span>
+      <span class="status-text">Vision Service (localhost:8000)</span>
+    </div>
+    <div style="display:flex;align-items:center;">
+      <span class="status-dot" id="llm-dot"></span>
+      <span class="status-text" id="llm-label">LLM 服务</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">模型设置</div>
+    <div class="form-row">
+      <span class="form-label">大模型</span>
+      <select id="model-select">
+        <option value="ollama">本地 Ollama</option>
+        <option value="openai">OpenAI GPT-4o</option>
+        <option value="claude">Claude 3.5</option>
+        <option value="custom">自定义模型...</option>
+      </select>
+    </div>
+
+    <!-- 自定义模型配置区域 -->
+    <div class="custom-fields" id="custom-fields">
+      <div class="custom-field">
+        <label>API 地址 (Base URL)</label>
+        <input type="text" id="custom-base-url" placeholder="https://api.deepseek.com/v1">
+      </div>
+      <div class="custom-field">
+        <label>API Key</label>
+        <input type="password" id="custom-api-key" placeholder="sk-...">
+      </div>
+      <div class="custom-field">
+        <label>模型名称</label>
+        <input type="text" id="custom-model" placeholder="deepseek-chat">
+      </div>
+      <div style="margin: 8px 0 4px;">
+        <span class="form-hint">快速填充：</span>
+        <span class="preset-tag" data-preset="deepseek">DeepSeek</span>
+        <span class="preset-tag" data-preset="glm">智谱 GLM-4</span>
+        <span class="preset-tag" data-preset="qwen">通义千问</span>
+        <span class="preset-tag" data-preset="moonshot">Moonshot</span>
+        <span class="preset-tag" data-preset="zhipu">零一万物</span>
+      </div>
+      <button class="save-btn" id="save-custom-btn">保存并应用</button>
+    </div>
+
+    <!-- Claude API Key 区域 -->
+    <div class="custom-fields" id="claude-fields">
+      <div class="custom-field">
+        <label>Anthropic API Key</label>
+        <input type="password" id="claude-api-key" placeholder="sk-ant-...">
+      </div>
+      <button class="save-btn" id="save-claude-btn">保存并应用</button>
+    </div>
+
+    <div class="form-row" style="margin-top:10px;">
+      <span class="form-label">截图间隔</span>
+      <select id="interval-select">
+        <option value="1000">1 秒</option>
+        <option value="1500" selected>1.5 秒</option>
+        <option value="2000">2 秒</option>
+        <option value="3000">3 秒</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="footer">v1.0.0 · 仅供学习研究</div>
+  <div class="toast" id="toast"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

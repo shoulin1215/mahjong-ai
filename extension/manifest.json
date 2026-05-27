@@ -1,0 +1,44 @@
+{
+  "manifest_version": 3,
+  "name": "雀魂AI助手",
+  "version": "1.0.0",
+  "description": "自动识别雀魂麻将牌面，接入大模型提供最佳出牌建议",
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://mahjongsoul.game.yo-star.com/*",
+    "https://game.mahjongsoul.com/*",
+    "http://localhost:8000/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://mahjongsoul.game.yo-star.com/*",
+        "https://game.mahjongsoul.com/*"
+      ],
+      "js": ["content.js"],
+      "css": ["overlay.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

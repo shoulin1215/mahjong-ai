@@ -1,0 +1,57 @@
+# ============================================
+# 雀魂麻将 AI 助手 - 配置文件
+# ============================================
+
+# --- 屏幕捕获（本地桌面模式专用，Chrome扩展模式不需要） ---
+capture:
+  region:
+    top: 585
+    left: 260
+    width: 800
+    height: 100
+  interval: 0.5
+  window_title: ""
+
+# --- YOLO 牌面检测 ---
+detector:
+  model_path: "vision_service/models/tiles_yolov8.pt"
+  conf_threshold: 0.5
+  iou_threshold: 0.45
+
+# --- 牌面分类 (34类 CNN) ---
+classifier:
+  model_path: "models/resnet_mahjong.pt"
+  num_classes: 34
+  conf_threshold: 0.7
+  input_size: [56, 80]
+  device: "auto"
+
+# --- LLM 决策引擎 ---
+llm:
+  provider: "ollama"
+
+  ollama:
+    base_url: "http://localhost:11434"
+    model: "qwen2.5:9b"
+
+  openai:
+    api_key: "${OPENAI_API_KEY}"
+    base_url: "https://api.openai.com/v1"
+    model: "gpt-4o"
+
+  deepseek:
+    api_key: "${DEEPSEEK_API_KEY}"
+    base_url: "https://api.deepseek.com/v1"
+    model: "deepseek-chat"
+
+# --- 推理策略 ---
+inference:
+  cache_ttl: 2.0
+  llm_timeout: 15
+  max_retries: 2
+
+# --- 服务配置 ---
+server:
+  host: "0.0.0.0"
+  port: 8000
+  reload: true
